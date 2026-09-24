@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Downloader</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        max-width: 640px;
+        margin: 80px auto;
+        padding: 20px;
+        font-family: system-ui, sans-serif;
+      }
+
+      form {
+        display: flex;
+        gap: 8px;
+      }
+
+      input {
+        flex: 1;
+        padding: 10px;
+      }
+
+      button {
+        padding: 10px 16px;
+      }
+
+      #result {
+        margin-top: 20px;
+      }
+
+      .error {
+        color: #c00;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Downloader</h1>
+
+    <form id="form">
+      <input
+        id="url"
+        type="url"
+        placeholder="https://example.com/file"
+        required
+      />
+      <button type="submit">Download</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+      const form = document.querySelector("#form");
+      const url = document.querySelector("#url");
+      const result = document.querySelector("#result");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        result.textContent = "Downloading...";
+
+        try {
+          const response = await fetch("/download", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              url: url.value,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Download failed");
+          }
+
+          const data = await response.json();
+
+          result.innerHTML = `
+            <a href="${data.downloadUrl}" download>
+              Download file
+            </a>
+          `;
+        } catch (error) {
+          result.innerHTML = `<p class="error">${error.message}</p>`;
+        }
+      });
+    </script>
+  </body>
+</html>
