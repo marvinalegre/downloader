@@ -53,7 +53,8 @@ def index():
 @app.post("/download", dependencies=[Depends(authenticate)])
 def download(request: DownloadRequest):
     subprocess.run(
-        ["foo", request.url],
+        ["/home/marvin/desktop/downloader/.misc/yt-dlp_linux", request.url],
+
         cwd=DOWNLOADS,
         check=True,
     )
