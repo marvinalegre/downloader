@@ -5,66 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Downloader</title>
 
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.red.min.css"
+    />
+
     <style>
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        max-width: 640px;
-        margin: 80px auto;
-        padding: 20px;
-        font-family: system-ui, sans-serif;
-      }
-
-      form {
-        display: flex;
-        gap: 8px;
-      }
-
-      input {
-        flex: 1;
-        padding: 10px;
-      }
-
-      button {
-        padding: 10px 16px;
-      }
-
-      #result {
-        margin-top: 20px;
-      }
-
-      .error {
-        color: #c00;
+      .container {
+        margin-top: 4rem;
+        max-width: 680px;
+        margin-inline: auto;
       }
     </style>
   </head>
 
   <body>
-    <h1>Downloader</h1>
+    <main class="container">
+      <h1>Downloader</h1>
 
-    <form id="form">
-      <input
-        id="url"
-        type="url"
-        placeholder="https://example.com/file"
-        required
-      />
-      <button type="submit">Download</button>
-    </form>
+      <form id="form">
+        <input
+          id="url"
+          type="url"
+          placeholder="https://example.com/file"
+          required
+        />
+        <button type="submit">Download</button>
+      </form>
 
-    <div id="result"></div>
-
+      <div id="result"></div>
+    </main>
     <script>
       const form = document.querySelector("#form");
+      const button = document.querySelector("button");
+      const input = document.querySelector("input");
       const url = document.querySelector("#url");
       const result = document.querySelector("#result");
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        result.textContent = "Downloading...";
+        button.textContent = "Downloading...";
+        button.disabled = true;
+        input.disabled = true;
+        result.innerHTML = "";
 
         try {
           const response = await fetch("/download", {
@@ -91,6 +75,11 @@
         } catch (error) {
           result.innerHTML = `<p class="error">${error.message}</p>`;
         }
+
+        button.textContent = "Download";
+        button.disabled = false;
+        input.disabled = false;
+        input.value = "";
       });
     </script>
   </body>
